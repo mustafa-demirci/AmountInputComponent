@@ -7,10 +7,10 @@
 import Foundation
 import UIKit
 
-
 public protocol AmountInputViewInterface: AnyObject {
     func priceChanged(_ price: Double)
 }
+
 public final class AmountInputViewData {
     private let exactAmountFont: UIFont?
     private let exactAmountColor: UIColor?
@@ -18,7 +18,22 @@ public final class AmountInputViewData {
     private let fractionalAmountFont: UIFont?
     private let fractionalAmountColor: UIColor?
 
+    private let viewDelegate: AmountInputViewInterface?
+
+    public init(exactAmountFont: UIFont? = UIFont.systemFont(ofSize: 60, weight: .bold),
+                exactAmountColor: UIColor? = UIColor.black,
+                fractionalAmountFont: UIFont? = UIFont.systemFont(ofSize: 30, weight: .medium),
+                fractionalAmountColor: UIColor? = UIColor.black.withAlphaComponent(0.7),
+                viewDelegate: AmountInputViewInterface?) {
+
+        self.exactAmountFont = exactAmountFont
+        self.exactAmountColor = exactAmountColor
+        self.fractionalAmountFont = fractionalAmountFont
+        self.fractionalAmountColor = fractionalAmountColor
+        self.viewDelegate = viewDelegate
+    }
 }
+
 public final class AmountInputView: DataBasedComponentView<AmountInputViewData> {
     private weak var newPriceComponentInterface: AmountInputViewInterface!
 
@@ -34,11 +49,11 @@ public final class AmountInputView: DataBasedComponentView<AmountInputViewData> 
 
     private lazy var exactPriceTextField: CursorFixedToEndTextField = {
         let temp = CursorFixedToEndTextField()
-        temp.font = .systemFont(ofSize: 60, weight: .bold)
+        temp.font = UIFont.systemFont(ofSize: 60, weight: .bold)
         temp.text = "0"
         temp.keyboardType = .decimalPad
         temp.delegate = self
-        temp.textColor = .black
+        temp.textColor = UIColor.black
         temp.layer.shadowOpacity = 0
         temp.translatesAutoresizingMaskIntoConstraints = false
         return temp
@@ -105,6 +120,7 @@ public final class AmountInputView: DataBasedComponentView<AmountInputViewData> 
     }
 
 }
+
 extension AmountInputView: UITextFieldDelegate {
     private func adjustFont(with count: Int) {
         if count >= 5 {
